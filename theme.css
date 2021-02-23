@@ -1,0 +1,976 @@
+/* 作者  reedbook   V1.0.1
+2021年2月19日 V1.0.1 修复无序  有序列表错位  减小括号弯度
+2021年2月22日 V1.0.2 修复代码框语言标识 错位
+2021年2月23日 V1.0.3 修改无序 有序列表 上下外边距
+
+注:根据大佬  作者：flying fly flies Blue Topaz light for 思源，[20201226]。修改 */
+/*
+===========================
+=====笔记框 Note blocks=====
+===========================
+
+----------------------------------------------------------------------
+---------------不同颜色背景 Colourful note backgrounds-----------------
+----------------------------------------------------------------------
+语法：```note-xxx-bg 或```note-xxx-background
+---------------------------------------------
+
+```note-orange-bg
+正文text
+```
+
+```note-yellow-bg
+正文text
+```
+
+```note-green-bg
+正文text
+```
+
+```note-blue-bg
+正文text
+```
+
+```note-purple-bg
+正文text
+```
+
+```note-pink-bg
+正文text
+```
+
+```note-red-bg
+正文text
+```
+
+```note-gray-bg
+正文text
+```
+
+```note-brown-bg
+正文text
+```
+-----------------------------------------------------
+----------不同笔记颜色 Colourful note texts------------
+-----------------------------------------------------
+
+```note-orange
+正文text
+```
+
+```note-yellow
+正文text
+```
+
+```note-green
+正文text
+```
+
+```note-blue
+正文text
+```
+
+```note-purple
+正文text
+```
+
+```note-pink
+正文text
+```
+
+```note-red
+正文text
+```
+
+```note-gray
+正文text
+```
+
+```note-brown
+正文text
+```
+
+
+--------------------------------------------------------
+------------重要笔记框 important note blocks-------------
+--------------------------------------------------------
+有笔记外框 Different block style
+--------------------------------------------------------
+
+```note-imp
+正文text
+```
+*/
+
+:root {
+    /* 主色 */
+    --b3-theme-primary: #1478d4;
+    --b3-theme-primary-light: rgba(66, 133, 244, 0.54);
+    --b3-theme-primary-lighter: rgba(66, 133, 244, 0.38);
+    --b3-theme-primary-lightest: rgba(66, 133, 244, 0.12);
+    --b3-theme-secondary: #f3a92f;
+    --b3-theme-background: #fafafa;
+    --b3-theme-surface: #ebebeb;
+    --b3-theme-error: #d23f31;
+    /* 文字颜色 */
+    --b3-theme-on-primary: #fff;
+    --b3-theme-on-secondary: #fff;
+    --b3-theme-on-background: #202124;
+    --b3-theme-on-surface: #333333;
+    --b3-theme-on-error: #fff;
+    --file-active-text-color: #f1f1f1;
+    /* 字体 */
+    --b3-font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+    --b3-font-family-code: mononoki, Consolas, "Liberation Mono", Menlo, Courier, monospace, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+    /* 线条
+    修改影响范围
+      分屏中间间隔线条
+    */
+    --b3-border-color: rgba(194, 194, 194, 0.712);
+    /* 滚动条 */
+    --b3-scroll-color: rgba(0, 0, 0, .3);
+    /* 列表 */
+    --b3-list-hover: rgba(0, 0, 0, .06);
+    /* 页签 */
+    --b3-tab-background: #ebebeb;
+    /* 提示 */
+    --b3-tooltips-color: rgba(0, 0, 0, 0.54);
+    /* 动画效果 */
+    --b3-transition: all .15s cubic-bezier(0, 0, .2, 1) 0ms;
+    /* 阴影 */
+    --b3-point-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    --b3-dialog-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+    /* diff */
+    --b3-diff-add: #dfd;
+    --b3-diff-add-surface: #97f295;
+    --b3-diff-del: #fee8e9;
+    --b3-diff-del-surface: #ffb6ba;
+    /* 图表颜色 */
+    --b3-graph-point: #2f92e4;
+    --b3-graph-line: #9aa0a6;
+    --b3-graph-hl-point: #f3a92f;
+    --b3-graph-hl-line: #d23f31;
+    /* 编辑器工具栏高度 */
+    --b3-vditor-toolbar-height: 29px;
+    --b3-vditor-toolbar-height-space: 6px;
+    /* 编辑器搜索颜色 */
+    --b3-vditor-search-background: #ffe955;
+    --b3-vditor-search-border-color: #f2e680;
+    --b3-vditor-search-current-background: #a5d3fe;
+    /* 代码片段背景 */
+    --b3-vditor-code-background: #63a3df33;
+    /* 即时渲染标记符颜色 */
+    --b3-vditor-mark-heading-color: #660e7a;
+    --b3-vditor-mark-title-color: #808080;
+    --b3-vditor-mark-em-color: #0033b3;
+    --b3-vditor-mark-strong-color: #0033b3;
+    --b3-vditor-mark-backslash-color: #0033b3;
+    --b3-vditor-mark-s-color: #5f6368;
+    --b3-vditor-mark-mark-color: #5f6368;
+    --b3-vditor-mark-link-color: #008000;
+    --b3-vditor-mark-bracket-color: #0000ff;
+    --b3-vditor-mark-paren-color: #008000;
+    --b3-vditor-mark-block-color: #660e7a;
+    --b3-vditor-mark-tag-color: #0033b3;
+    /* 即时渲染行内元素颜色 */
+    --b3-vditor-inline-strong-color: #e42b2b;
+    --b3-vditor-inline-em-color: #202124;
+    --b3-vditor-inline-s-color: #202124;
+    --b3-vditor-inline-link-color: #4285f4;
+    --b3-vditor-inline-mark-background: #ffe955;
+    --b3-vditor-inline-mark-color: #202124;
+    --b3-vditor-inline-tag-color: #5f6368;
+    --b3-vditor-inline-blockref-color: #1d92ff;
+    /*From blue topaz (obsidian)*/
+    --background-primary: #ffffff;
+    --background-primary-alt: #f8f8f8;
+    --background-secondary: #ececec;
+    --background-secondary-alt: #dadada;
+    --background-accent: #fff;
+    --background-modifier-border: #e1dfdf;
+    --background-modifier-form-field: #fff;
+    --background-modifier-form-field-highlighted: #fff;
+    --background-modifier-box-shadow: rgba(0, 0, 0, 0.1);
+    --background-modifier-success: #A4E7C3;
+    --background-modifier-error: #e68787;
+    --background-modifier-error-rgb: 230, 135, 135;
+    --background-modifier-error-hover: #FF9494;
+    --background-modifier-cover: rgba(0, 0, 0, 0.8);
+    --text-accent: #007de4;
+    --text-accent-hover: #4ba8ff;
+    --text-normal: #000000;
+    --text-muted: #666666;
+    --text-faint: #7a7a7a;
+    --accent-strong: #000000;
+    --text-error: #e75545;
+    --text-error-hover: #f86959;
+    --text-highlight-bg: #ffaa00a4;
+    --text-selection: #ffe23d48;
+    --text-on-accent: #f2f2f2;
+    --interactive-normal: #eaeaeb;
+    --interactive-hover: #dbdbdc;
+    --interactive-accent-rgb: 70, 142, 235;
+    --interactive-accent: #2f92e4;
+    --interactive-accent-hover: #4ba8ff;
+    --panel-border-color: #dbdbdc;
+    --search-text: #000000;
+    --folder-title: #000000;
+    --mark-highlight: #ffaa00a4;
+    --gray-1: #383a42;
+    --gray-2: #383a42;
+    --red: #e75545;
+    --green: #4ea24c;
+    --blue: #3d74f6;
+    --purple: #a625a4;
+    --aqua: #0084bc;
+    --yellow: #e5c07b;
+    --orange: #db9600;
+    --yykys: #468eeb27;
+    --btys: #b6bdc0;
+    --bqys: #ffffff;
+    --bqds: #eaeaea;
+    --zzsyck: #2f92e4;
+    --btblj: #2f92e4;
+    --dgxs: #d0d3d5;
+    --ztys: #2f92e4;
+    --ztysop: #2f92e4a2;
+    --color-specification: #0084ff;
+    --list-ul-block-color: #b9751b;
+    --list-ul-disc-color: #ff7300;
+    --list-ul-hover: #dd922f;
+    --list-ol-block-color: #3573a5;
+    --list-ol-number-color: #a3bee0;
+    --list-ol-hover: #5c95e0;
+    /*tags*/
+    --tag1: #ff0000;
+    --tag2: #ff9900;
+    --tag3: #00a030;
+    --bqys1: #e77e7e;
+    --bqys2: #dbb671;
+    --bqys3: #cacc41;
+    --bqys4: #5dcf53;
+    --bqys5: #49c9ce;
+    --bqys6: #6da1dd;
+    --bqys7: #9270db;
+    --bqys8: #e277d9;
+    --bqys9: #6b6b6b;
+    /*Titles*/
+    --h1-color: #08367c;
+    --h2-color: #004faa;
+    --h3-color: #0e64bb;
+    --h4-color: #3481c5;
+    --h5-color: #59a0e2;
+    --h6-color: #88b8e6;
+    --file-list-background: #268bdd;
+    --file-list-background-files: #0474cf5b;
+    --workplace-markdown: #ee9b00;
+    --layout-tabbar: #000000;
+    --blockquote-color: #e6e6e6;
+    --link-color: #8cbae0;
+    /*graph*/
+    --tpsh: #2f92e4;
+    --tpwzys: #696969;
+    --graphtag: #77d425cc;
+    --graph-attach: #afcfe0cc;
+    --graph-circle: #1f78b4cc;
+    --graph-line: #dadada;
+    --graph-unresolved: #db4e4ecc;
+    --graph-arrow: #e25300;
+    /*mermaid*/
+    --mermaid-active-task-color: #44bbff;
+    --mermaid-seq-dia-color: #76c8ff;
+    /*table*/
+    --table-background-color: #ebebeb;
+    --table-background-color-odd: #ffffff;
+    --table-border-color: #555555;
+    --table-thead-background-color: #bfddf5;
+    --table-hover-raw-color: #2f93e42f;
+    --table-hover-color: #2f93e47c;
+    --table-hover-thead-color: #cde8ff;
+    /*colourful notes*/
+    --text-gray: #37352f99;
+    --text-brown: #855a46;
+    --text-orange: #ff8000;
+    --text-yellow: #d4a300;
+    --text-green: #00927f;
+    --text-blue: #0083bb;
+    --text-purple: #5d1fb9;
+    --text-pink: #c40075;
+    --text-red: #ff4343;
+    --background-gray: #ebeced;
+    --background-brown: #e9e5e3;
+    --background-orange: #faebdd;
+    --background-yellow: #fbf3db;
+    --background-green: #ddedea;
+    --background-blue: #ddebf1;
+    --background-purple: #eae4f2;
+    --background-pink: #f4dfeb;
+    --background-red: #ffe3e3;
+    --note-important: #fd4141;
+    --note-cloze: #000000;
+}
+
+.language-graphviz polygon {
+    fill: transparent;
+}
+
+
+/*=========================*/
+
+
+/*==========tags===========*/
+
+
+/*=========================*/
+
+
+/* ====== Tag Pills ======== */
+
+span.vditor-ir__tag:not(.token) {
+    border: none;
+    color: white;
+    padding: 1px 8px;
+    text-align: center;
+    text-decoration: none;
+    margin: 0px;
+    cursor: pointer;
+    border-radius: 15px;
+    background-color: var(--ztys);
+    font-family: var(--font-family-tag);
+}
+
+span.vditor-ir__tag:not(.token):hover {
+    color: white;
+    background-color: var(--ztysop);
+}
+
+
+/*目录栏*/
+
+.b3-list--background .b3-list-item--focus {
+    background-color: var(--file-list-background) !important;
+}
+
+li.b3-list-item.b3-list-item--hide-action.b3-list-item--focus {
+    background-color: var(--file-list-background) !important;
+}
+
+.b3-list--background .b3-list-item--focus .b3-list-item__text,
+.b3-list--background .b3-list-item--focus .b3-list-item__graphic {
+    color: var(--file-active-text-color) !important;
+}
+
+li.b3-list-item.b3-list-item--hide-action {
+    border: none;
+    border-radius: 0%;
+    width: auto;
+    transition: none;
+    margin-bottom: 0px !important;
+}
+
+li.b3-list-item.b3-list-item--hide-action:hover {
+    background-color: var(--file-list-background-files) !important;
+}
+
+li.item {
+    border: 2px solid var(--file-list-background) !important;
+    border-bottom: none !important;
+    border-radius: 5px 7px 0px 0px !important;
+    margin-bottom: 0px !important;
+}
+
+
+/*激活标签页*/
+
+li.item.item--focus {
+    background-color: var(--file-list-background) !important;
+}
+
+li.item.item--focus:hover {
+    background-color: var(--file-list-background);
+}
+
+.toolbar__item:hover {
+    color: var(--b3-theme-primary);
+}
+
+li.item:hover,
+.b3-list-item:hover {
+    background-color: var(--file-list-background-files)!important;
+    box-shadow: none !important;
+}
+
+.ft__primary:hover {
+    transform: scale(1.5);
+    transition: all 200ms ease-in-out;
+}
+
+
+/*页面标签栏*/
+
+.layout-tab-bar .item--focus {
+    background-color: var(--file-list-background-files) !important;
+    border-color: var(--b3-theme-primary);
+    color: var(--file-active-text-color) !important;
+}
+
+.layout-tab-bar .item--focus:hover {
+    background-color: var(--file-list-background-files);
+}
+
+
+/*标签形状*/
+
+.layout-tab-bar .item {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 20px;
+    color: var(--layout-tabbar);
+}
+
+
+/*工作区*/
+
+.vditor-ir__link {
+    color: var(--link-color);
+}
+
+.vditor-reset {
+    color: #000000 !important;
+}
+
+blockquote {
+    border-left: 5px solid !important;
+    border-color: var(--b3-theme-primary) !important;
+    background-color: var(--blockquote-color);
+    color: #000000 !important;
+    padding: 10px 10px 10px 15px !important;
+}
+
+
+/*设置页面*/
+
+li.b3-list-item.b3-list-item--big {
+    border: none !important;
+    border-radius: 0%;
+    width: auto;
+    transition: none;
+    margin-bottom: 0px !important;
+    padding-left: 25px;
+}
+
+
+/*
+.vditor-reset pre>code{
+    border: 2px solid;
+    border-color: var(--b3-theme-primary);
+}
+*/
+
+
+/*脚注等颜色*/
+
+.hljs-bullet,
+.hljs-quote,
+.hljs-link,
+.hljs-number,
+.hljs-regexp,
+.hljs-literal {
+    color: #003c96 !important;
+}
+
+.hljs-comment,
+.hljs-quote {
+    font-style: normal !important;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+    color: var(--b3-graph-hl-line) !important;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+    color: rgb(245, 131, 0) !important;
+    font-weight: bold;
+}
+
+
+/*md语法*/
+
+.vditor-ir__node .vditor-ir__marker {
+    color: var(--workplace-markdown);
+}
+
+
+/*标题*/
+
+.vditor-reset h1 {
+    color: var(--h1-color);
+    border-bottom: 2px solid;
+}
+
+.vditor-reset h2 {
+    color: var(--h2-color);
+    border-bottom: 1px solid;
+}
+
+.vditor-reset h3 {
+    color: var(--h3-color);
+}
+
+.vditor-reset h4 {
+    color: var(--h4-color);
+}
+
+.vditor-reset h5 {
+    color: var(--h5-color);
+}
+
+.vditor-reset h6 {
+    color: var(--h6-color);
+}
+
+
+/*代码框
+根据代码语言  在代码框右边增加自定义语言标识
+*/
+
+code::before {
+    /* 代码框语言颜色 */
+    color: #61f51c !important;
+    opacity: 0.7;
+    /* 代码框语言字体大小 */
+    font-size: 11px;
+    font-weight: 600;
+    /* 换行*/
+    display: block;
+    padding: 1px 0px;
+    /* 代码框语言居左位置 */
+    padding-left: 90%;
+}
+
+
+/* 代码框编号前插入空行 */
+
+span[class="vditor-linenumber__rows"]::before {
+    content: "\D\A";
+}
+
+code[class~='language-js']::before {
+    content: 'JS';
+}
+
+code[class~='language-c']::before {
+    content: "C";
+}
+
+code[class~='language-python']::before {
+    content: "PYTHON";
+}
+
+code[class~='language-nginx']::before {
+    content: "NGINX";
+}
+
+code[class~='language-css']::before {
+    content: "CSS";
+}
+
+code[class~='language-javascript']::before {
+    content: "JS";
+}
+
+code[class~='language-php']::before {
+    content: "PHP";
+}
+
+code[class~='language-shell']::before {
+    content: "SHELL";
+}
+
+code[class~='language-flow']::before {
+    content: "FLOW";
+}
+
+code[class~='language-sequence']::before {
+    content: "SEQUENCE";
+}
+
+code[class~='language-sql']::before {
+    content: "SQL";
+}
+
+code[class~='language-yaml']::before {
+    content: "YAML";
+}
+
+code[class~='language-ini']::before {
+    content: "INI";
+}
+
+code[class~='language-xml']::before {
+    content: "XML";
+}
+
+code[class~='language-git']::before {
+    content: "GIT";
+}
+
+code[class~='language-cs']::before {
+    content: "C#";
+}
+
+code[class~='language-cpp']::before {
+    content: "C++";
+}
+
+code[class~='language-java']::before {
+    content: "JAVA";
+}
+
+code[class~='language-html']::before {
+    content: "HTML";
+}
+
+code[class~='language-txt']::before {
+    content: "TXT";
+}
+
+code.language-math {
+    background-color: transparent !important;
+}
+
+.b3-list--background .b3-list-item--focus {
+    color: white;
+}
+
+
+/* 分割线 */
+
+.vditor-reset hr {
+    background-color: #bbbbbb;
+}
+
+
+/* 五颜六色的笔记 */
+
+
+/* from Notation by death_au  https://github.com/deathau/Notation-for-Obsidian */
+
+
+/* Original idea from: https://gist.github.com/mklepaczewski/54e451f09994b9d450de81c8baaf8aa4 */
+
+
+/* but also with simpler classes so you can use `<span class='colour'>` as well */
+
+code.language-note-notice,
+code.language-note-gray-background,
+code.language-note-gray-bg,
+.gray-background,
+.gray-bg {
+    background-color: var(--background-gray) !important;
+}
+
+code.language-note-brown-background,
+code.language-note-brown-bg,
+.brown-background,
+.brown-bg {
+    background-color: var(--background-brown) !important;
+}
+
+code.language-note-orange-background,
+code.language-note-orange-bg,
+.orange-background,
+.orange-bg {
+    background-color: var(--background-orange) !important;
+}
+
+code.language-note-yellow-background,
+code.language-note-yellow-bg,
+.yellow-background,
+.yellow-bg {
+    background-color: var(--background-yellow) !important;
+}
+
+code.language-note-green-background,
+code.language-note-green-bg,
+.green-background,
+.green-bg {
+    background-color: var(--background-green) !important;
+}
+
+code.language-note-blue-background,
+code.language-note-blue-bg,
+.blue-background,
+.blue-bg {
+    background-color: var(--background-blue) !important;
+}
+
+code.language-note-purple-background,
+code.language-note-purple-bg,
+.purple-background,
+.purple-bg {
+    background-color: var(--background-purple) !important;
+}
+
+code.language-note-pink-background,
+code.language-note-pink-bg,
+.pink-background,
+.pink-bg {
+    background-color: var(--background-pink) !important;
+}
+
+code.language-note-red-background,
+code.language-note-red-bg,
+.red-background,
+.red-bg {
+    background-color: var(--background-red) !important;
+}
+
+code.language-note-important,
+code.language-note-imp {
+    border: 4px dashed var(--note-important) !important;
+    background-color: transparent !important;
+}
+
+code.language-note-important:before,
+code.language-note-imp::before {
+    content: "Important";
+    color: var(--note-important) !important;
+    font-weight: 800;
+    padding: 5px 0px;
+    padding-left: 0%;
+}
+
+
+/*colourful text*/
+
+code.language-note-gray,
+code.language-note-brown,
+code.language-note-orange,
+code.language-note-yellow,
+code.language-note-green,
+code.language-note-blue,
+code.language-note-purple,
+code.language-note-pink,
+code.language-note-red {
+    background-color: #fdfdfd !important;
+    border: none !important;
+}
+
+code.language-note-gray,
+.gray {
+    color: var(--text-gray);
+}
+
+code.language-note-brown,
+.brown {
+    color: var(--text-brown);
+}
+
+code.language-note-orange,
+.orange {
+    color: var(--text-orange);
+}
+
+code.language-note-yellow,
+.yellow {
+    color: var(--text-yellow)
+}
+
+code.language-note-green,
+.green {
+    color: var(--text-green);
+}
+
+code.language-note-blue,
+.blue {
+    color: var(--text-blue);
+}
+
+code.language-note-purple,
+.purple {
+    color: var(--text-purple);
+}
+
+code.language-note-pink,
+.pink {
+    color: var(--text-pink);
+}
+
+code.language-note-red,
+.red {
+    color: var(--text-red);
+}
+
+
+/*列表*/
+
+
+/*简单竖线*/
+
+
+/*
+ul,
+ol,
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+    list-style-position: inside;
+}
+
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+    content:'';
+    border-left: 2px solid var(--background-modifier-border);
+    margin-left: 0.1em !important;
+}*/
+
+ul>li:not(.task-list-item) {
+    position: relative;
+    padding-left: 6px;
+    list-style-position: inside;
+    /* 列表括号弧度 */
+    border-radius: 5px;
+    width: fit-content;
+    /* 列表上外边距 */
+    margin-top: 4px;
+    /* 列表下外边距 */
+    margin-bottom: 4px;
+    /* 文件数标签左边宽度 */
+    padding-right: 6px;
+    transition: all 300ms ease-in-out;
+}
+
+
+/* 自动换行 */
+
+ul>li:not(.task-list-item)>p {
+    display: inline;
+}
+
+ul>li:not(.task-list-item) {
+    border-left: 2px solid var(--list-ul-block-color);
+    /*box-shadow: 0 0 0 1px var(--list-ul-block-color);*/
+}
+
+ul>li:not(.task-list-item):hover {
+    border-color: var(--list-ul-hover);
+    box-shadow: 0 0 0 2px var(--list-ul-hover);
+}
+
+ol {
+    position: relative;
+    list-style: none;
+    counter-reset: cupcake;
+}
+
+ol>li {
+    position: relative;
+    padding-left: 6px;
+    list-style-position: inside;
+    /* 列表括号弧度 */
+    border-radius: 5px;
+    width: fit-content;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding-right: 6px;
+    counter-increment: cupcake;
+    word-wrap: break-word;
+    word-break: break-word;
+    transition: all 300ms ease-in-out;
+}
+
+ol>li {
+    border-left: 2px solid var(--list-ol-block-color);
+    /*box-shadow: 0 0 0 1px var(--list-ol-block-color);*/
+}
+
+ol>li:hover {
+    border-color: var(--list-ol-hover);
+    box-shadow: 0 0 0 2px var(--list-ol-hover);
+}
+
+ol>li::before {
+    content: counters(cupcake, '.') '. ';
+    font-weight: bold;
+    color: var(--list-ol-number-color);
+    display: inline-block;
+    white-space: pre;
+}
+
+
+/* 自动换行 */
+
+ol>li>p {
+    display: inline;
+}
+
+
+/*table*/
+
+.vditor-reset table td,
+.vditor-reset table th {
+    border: 1px solid gray;
+}
+
+.to-recall {
+    position: relative;
+    float: left;
+    width: 30%;
+    background-color: var(--text-normal);
+    border-radius: 2%;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+    z-index: 1;
+    padding: 10px 8px;
+    margin-right: 8px;
+    font-weight: bold;
+    font-family: Cooper;
+    color: var(--text-normal);
+}
+
+.to-recall:hover {
+    cursor: pointer;
+}
+
+.to-recall:active {
+    position: relative;
+    max-width: 30%;
+    background-color: transparent;
+    border-radius: 5%;
+    transition: all 300ms ease;
+    color: var(--text-normal);
+}
+
+.to-recall::after {
+    content: "Click";
+    position: absolute;
+    font-size: 12px;
+    top: 1px;
+    right: 5px;
+    font-weight: 600;
+    font-family: Arial;
+    color: var(--background-primary);
+}
+
+.to-recall::before {
+    content: " To Recall";
+    display: inline-block;
+    position: absolute;
+    top: -20px;
+    left: -8px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: OCR A;
+    color: #858585;
+    white-space: pre;
+}
